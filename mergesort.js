@@ -7,40 +7,44 @@ function split(wholeArray) {
 	return [firstHalf, secondHalf];
 }
 
-function merge(leftArr, rightArr) {
+function merge(leftArr, rightArr, cmp = defaultCompare) {
 	let leftIndex = (rightIndex = 0);
 	let mergedArray = [];
 	let sumArrLengths = leftArr.length + rightArr.length;
-	let leftVal = leftArr[0];
-	let rightVal = rightArr[0];
+
 	while (mergedArray.length < sumArrLengths) {
 		if (leftArr.length === leftIndex) {
 			//add rest of right array
 			mergedArray.push(...rightArr.slice(rightIndex));
+			continue;
 		}
 		if (rightArr.length === rightIndex) {
 			//add rest of left array
 			mergedArray.push(...leftArr.slice(leftIndex));
+			continue;
 		}
-		if (leftVal < rightVal) {
+		let leftVal = leftArr[leftIndex];
+		let rightVal = rightArr[rightIndex];
+		const cmpVal = cmp(leftVal, rightVal);
+		if (cmpVal < 0) {
 			mergedArray.push(leftVal);
 			leftIndex++;
-			leftVal = leftArr[leftIndex];
-		} else if (leftVal >= rightVal) {
+		} else if (cmpVal >= 0) {
 			mergedArray.push(rightVal);
 			rightIndex++;
-			rightVal = rightArr[rightIndex];
 		}
 	}
 
 	return mergedArray;
 }
 
-function mergeSort(array) {
+function mergeSort(array, cmp = defaultCompare) {
 	/* your code here */
 	if (array.length <= 1) return array;
 	const [leftArr, rightArr] = split(array);
-	const sortedLeftArr = mergeSort(leftArr);
-	const sortedRightArr = mergeSort(rightArr);
-	return merge(sortedLeftArr, sortedRightArr);
+	const sortedLeftArr = mergeSort(leftArr, cmp);
+	const sortedRightArr = mergeSort(rightArr, cmp);
+	return merge(sortedLeftArr, sortedRightArr, cmp);
 }
+
+const defaultCompare = (a, b) => a - b
