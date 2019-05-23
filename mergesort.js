@@ -8,30 +8,28 @@ function split(wholeArray) {
 }
 
 function merge(leftArr, rightArr, cmp = defaultCompare) {
-	let leftIndex = (rightIndex = 0);
+	let leftIndex = 0,
+		rightIndex = 0;
 	let mergedArray = [];
 	let sumArrLengths = leftArr.length + rightArr.length;
 
 	while (mergedArray.length < sumArrLengths) {
-		if (leftArr.length === leftIndex) {
-			//add rest of right array
-			mergedArray.push(...rightArr.slice(rightIndex));
-			continue;
-		}
-		if (rightArr.length === rightIndex) {
-			//add rest of left array
-			mergedArray.push(...leftArr.slice(leftIndex));
-			continue;
-		}
-		let leftVal = leftArr[leftIndex];
-		let rightVal = rightArr[rightIndex];
-		const cmpVal = cmp(leftVal, rightVal);
-		if (cmpVal < 0) {
+		let leftVal = leftArr[leftIndex],
+			rightVal = rightArr[rightIndex];
+
+		let leftEmpty = leftIndex === leftArr.length;
+		let rightEmpty = rightIndex === rightArr.length;
+		while (!leftEmpty && (rightEmpty || cmp(leftVal, rightVal) <= 0)) {
+			// move left into merged while less than right
 			mergedArray.push(leftVal);
-			leftIndex++;
-		} else if (cmpVal >= 0) {
+			leftVal = leftArr[++leftIndex];
+			leftEmpty = leftIndex === leftArr.length;
+		}
+		while (!rightEmpty && (leftEmpty || cmp(leftVal, rightVal) > 0)) {
+			// move right into merged while less than left
 			mergedArray.push(rightVal);
-			rightIndex++;
+			rightVal = rightArr[++rightIndex];
+			rightEmpty = rightIndex === rightArr.length;
 		}
 	}
 
