@@ -38,4 +38,9 @@ function merge(leftArr, rightArr) {
 
 function mergeSort(array) {
 	/* your code here */
+	if (array.length <= 1) return array;
+	const [leftArr, rightArr] = split(array);
+	const sortedLeftArr = mergeSort(leftArr);
+	const sortedRightArr = mergeSort(rightArr);
+	return merge(sortedLeftArr, sortedRightArr);
 }
